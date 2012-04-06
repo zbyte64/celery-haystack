@@ -69,10 +69,10 @@ class CeleryHaystackSignalHandler(Task):
             instance = model_class.objects.get(pk=pk)
         except model_class.DoesNotExist:
             logger.error("Couldn't load model instance "
-                         "with pk #%s. Somehow it went missing?" % pk)
+                         "with pk %s. Somehow it went missing?" % pk)
             return None
         except model_class.MultipleObjectsReturned:
-            logger.error("More than one object with pk #%s. Oops?" % pk)
+            logger.error("More than one object with pk %s. Oops?" % pk)
             return None
 
         return instance

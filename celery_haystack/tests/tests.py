@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from haystack.query import SearchQuerySet
 
-from .models import Note
+from .models import Note, Post
 
 
 class QueuedSearchIndexTestCase(TestCase):
@@ -22,6 +22,7 @@ class QueuedSearchIndexTestCase(TestCase):
 
         # Throw away all Notes
         Note.objects.all().delete()
+        Post.objects.all().delete()
 
     def test_update(self):
         self.assertSearchResultLength(0)
@@ -72,3 +73,15 @@ class QueuedSearchIndexTestCase(TestCase):
 
         note3.delete()
         self.assertSearchResultLength(1)
+
+    def test_non_int_pk(self):
+        post1 = Post.objects.create(content='Because everyone loves tests.')
+        post2 = Post.objects.create(content='More test data.')
+        post3 = Post.objects.create(content='The test data. All done.')
+        self.assertSearchResultLength(3)
+        post1.delete()
+        self.assertSearchResultLength(2)
+        post2.delete()
+        self.assertSearchResultLength(1)
+        post3.delete()
+        self.assertSearchResultLength(0)
